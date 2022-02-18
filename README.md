@@ -4,8 +4,9 @@
 1. Navigate terminal to local directory where folder is cloned
 1. The gems needed are:
    1. "fnv"
-   1. "get_process_mem" - **if you are not going to use it, comment lines 65 and 78, as well as the gem import statement**
-1.
+   1. "get_process_mem" (this is optional, it helped me track some of the memory usage during testing)
+1. In the command line, run the following command
+   1. *ruby run bloom_filter.rb*
 
 # ISSUES
 
