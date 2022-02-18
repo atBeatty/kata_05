@@ -16,26 +16,19 @@ class BloomFilter
   end
 
   def insert(key) # INSERT A HASHCODE COMBO INTO THE BITMAP ARRAY
-    mask = make_mask(key) # => 0s and 1s
-    # indexes = indexes_of_ones(mask) # => return the indexes of just the 1s
+    mask = make_mask(key) # => array of num_hashes length, filled with "index" numbers
     mask.each { |index|
-      @bitmap[index] = 1 # assign ones to the overall Filter at the specific indexes
+      @bitmap[index] = 1 # => assign ones to the overall Filter at the specific indexes
     }
   end
 
   def new?(key)
     mask = make_mask(key)
-
-    # indexes = indexes_of_ones(mask)
-    if key == "Aston"
-      #   puts mask.inspect
-      puts mask.map { |idx| @bitmap[idx] }.inspect
-    end
-    if mask.map { |idx| @bitmap[idx] }.include?(0)
-      true
-    else
-      false
-    end
+    # if key == "Aston"
+    #   puts mask.inspect
+    #   puts mask.map { |idx| @bitmap[idx] }.inspect
+    # end
+    mask.map { |idx| @bitmap[idx] }.include?(0) # => if one zero occurs, we know it is NEW, else not
   end
 
   #   def indexes_of_ones(bitmap)
@@ -50,11 +43,11 @@ class BloomFilter
   #   end
 
   def make_mask(key)
-    @__mask = Array.new(@num_hashes, 0)
+    @__mask = Array.new(@num_hashes, 0) # => make a mask array with as many elements as they are hash functions
     0.upto(@num_hashes.to_i - 1) do |i|
-      item = "#{key}#{i}"
-      indexhash = (FNV.new.fnv1_32(item)) % @size
-      @__mask.push(indexhash)
+      item = "#{key}#{i}" # => IM NOT SURE IF THIS IS WHAT A SEED IS? only way to introduce measured variability amongst the number of hash functions being iterated
+      indexhash = (FNV.new.fnv1_32(item)) % @size # => I thought this was so cool, easy way to make huge numbers usable
+      @__mask.push(indexhash) # => push the index to we know what combo of 1s equates to the key/string/word
       #   @__mask[indexhash] = 1
     end
     return @__mask
@@ -64,7 +57,7 @@ end
 def main(list, string)
   mem = GetProcessMem.new
   bf = BloomFilter.new(1000000, 5)
-  list[0..10000].each.with_index { |word, index|
+  list[0..10000].each.with_index { |word, index| # => ONLY using with the first 10000 words, before testing check .txt file to know what the last word is in order to genuinely test validity of spell checker
     if bf.new?(word.strip)
       bf.insert(word.strip)
     end
